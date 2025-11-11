@@ -1,0 +1,50 @@
+{
+    "spec": {
+        "_tasks": [
+            {
+                "func": "Auto_baby.run_scf_for_FIREWORKS",
+                "_fw_name": "PyTask"
+            },
+            {
+                "files": [
+                    {
+                        "src": "/home/student/zylu/demo/1_scf/CHGCAR",
+                        "dest": "/home/student/zylu/demo/2_dos"
+                    }
+                ],
+                "mode": "copy",
+                "_fw_name": "FileTransferTask"
+            }
+        ]
+    },
+    "fw_id": 1,
+    "created_on": "2025-11-10T14:59:59.944394",
+    "updated_on": "2025-11-10T14:59:59.949237",
+    "launches": [
+        {
+            "fworker": {
+                "name": "Automatically generated Worker",
+                "category": "",
+                "query": "{}",
+                "env": {}
+            },
+            "fw_id": 1,
+            "launch_dir": "/home/student/zylu/fireworks",
+            "host": "tgm-master.hpc",
+            "ip": "192.168.100.1",
+            "trackers": [],
+            "action": null,
+            "state": "RUNNING",
+            "state_history": [
+                {
+                    "state": "RUNNING",
+                    "created_on": "2025-11-10T14:59:59.948721",
+                    "updated_on": "2025-11-10T14:59:59.948726"
+                }
+            ],
+            "launch_id": 1
+        }
+    ],
+    "state": "RUNNING",
+    "name": "SCF Calculation"
+}
