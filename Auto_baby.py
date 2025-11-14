@@ -24,8 +24,8 @@ class Experiment:
         """Check each calculation directory contains its required input files."""
         required_files_by_dir = {
             self.scf_dir: ("POSCAR", "POTCAR", "INCAR", "job.sh"),
-            self.dos_dir: ("INCAR","job.sh"),
-            self.band_dir: ("INCAR","job.sh"),
+            self.dos_dir: ("INCAR",),
+            self.band_dir: ("INCAR",),
         }
         missing_by_dir = {}
 
@@ -104,4 +104,15 @@ class Experiment:
             time.sleep(interval)
 
 
+def scf_ready(material: str):
+    experiment = Experiment(material_dir=material)
+    experiment.ensure_required_files()
+    experiment.scf_calculation()
 
+def dos_ready(material: str):
+    experiment = Experiment(material_dir=material)
+    experiment.dos()
+
+def bs_ready(material: str):
+    experiment = Experiment(material_dir=material)
+    experiment.band_structure()
