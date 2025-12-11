@@ -4,6 +4,10 @@ from pathlib import Path
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.electronic_structure.plotter import BSPlotter, DosPlotter
 
+from pymatgen.core import Structure
+from pymatgen.symmetry.bandstructure import HighSymmKpath
+from pymatgen.io.vasp.inputs import Kpoints
+
 class Experiment:
 
     def __init__(self, material_dir: str = "") -> None:
@@ -47,7 +51,7 @@ class Experiment:
         process = subprocess.Popen(
             f"cd {self.scf_dir} && {self.submit_command} {self.job_script} > job_id.txt",
             shell=True)
-        process.wait(0.1)
+        process.wait(5)
         with open(f"{self.scf_dir}/job_id.txt") as f:
             job_id = f.read().strip()
         while True:
@@ -68,7 +72,7 @@ class Experiment:
         process = subprocess.Popen(
             f"cd {self.dos_dir} && {self.submit_command} {self.job_script} > job_id.txt",
             shell=True)
-        process.wait(0.1)
+        process.wait(5)
         with open(f"{self.dos_dir}/job_id.txt") as f:
             job_id = f.read().strip()
         while True:
@@ -80,7 +84,7 @@ class Experiment:
             if "COMPLETED" in main_state or "FAILED" in main_state or "CANCELLED" in main_state or "TIMEOUT" in main_state:
                 print(f"Final SLURM job state: {main_state}")
                 break
-
+            
             time.sleep(interval)
 
     def band_structure(self, interval: int = 1) -> None:
@@ -89,7 +93,7 @@ class Experiment:
         process = subprocess.Popen(
             f"cd {self.band_dir} && {self.submit_command} {self.job_script} > job_id.txt",
             shell=True)
-        process.wait(0.1)
+        process.wait(5)
         with open(f"{self.band_dir}/job_id.txt") as f:
             job_id = f.read().strip()
         while True:
@@ -107,7 +111,7 @@ class Experiment:
     def plot_dos(self, material_path: str = ''):
         if not material_path:
             raise ValueError("material_path must be provided.")
-    # load data
+        # load data
         result = Vasprun(f'{material_path}/2_dos/vasprun.xml', parse_potcar_file=False)
         # complete_dos = result.complete_dos
         # pdos_Si = complete_dos.get_element_spd_dos('Si')
@@ -139,9 +143,14 @@ def scf_ready(material: str):
 def dos_ready(material: str):
     experiment = Experiment(material_dir=material)
     experiment.dos()
-    experiment.plot_dos(material_path=material)
+    # experiment.plot_dos(material_path=material)
 
 def bs_ready(material: str):
+    structure = Structure.from_file(f'{material}/1_scf/POSCAR')
+    kpath = HighSymmKpath(structure)
+    kpts = Kpoints.automatic_linemode(divisions=40, ibz=kpath)
+    kpts.write_file(f"{material}/3_bs/KPOINTS")
+
     experiment = Experiment(material_dir=material)
     experiment.band_structure()
-    experiment.plot_band_structure(material_path=material)
+    # experiment.plot_band_structure(material_path=material)
