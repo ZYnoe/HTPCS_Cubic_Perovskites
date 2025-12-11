@@ -250,7 +250,7 @@ for idx, entry in sorted(_REMOVED_SYS_PATH_ENTRIES):
     sys.path.insert(idx, entry)
 
 
-API_KEY = "5ypNyStQsaDUA2neNLD17P8v2KNB241U"
+API_KEY = ""
 MATERIALS_BASE_PATH = "/home/student/zylu/materials_5"
 
 def Final_Calculation(launchpad, material_id, formula, material_path: str = ''):
